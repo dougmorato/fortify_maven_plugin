@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/
+2001/XMLSchema-instance">
+
+	<servlet>
+		 <servlet-name>myPage</servlet-name>
+		 <jsp-file>mypage.jsp</jsp-file>
+	</servlet>
+
+	<servlet-mapping>
+		 <servlet-name>myPage</servlet-name>
+		 <url-pattern>/myPage</url-pattern>
+	</servlet-mapping>
+	
+	<jsp-config>
+		<taglib>
+		   <taglib-uri>a</taglib-uri> 
+		   <taglib-location>WEB-INF/a.tld</taglib-location> 
+		</taglib>
+	</jsp-config>
+</web-app>

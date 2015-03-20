@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+  <properties>
+    <title>sca:scan</title>
+  </properties>
+  <body>
+    <section name="sca:scan">
+      <p><strong>Full name</strong>:</p>
+      <p>com.fortify.ps.maven.plugin:sca-maven-plugin:4.20:scan</p>
+      <p><strong>Description</strong>:</p>
+      <div>Perform the scan step on a particular build ID. Optionally, upload
+results to Software Security Center.</div>
+      <p><strong>Attributes</strong>:</p>
+      <ul>
+        <li>Requires a Maven project to be executed.</li>
+      </ul>
+      <subsection name="Required Parameters">
+        <table border="0">
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Since</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td><strong><a href="#fortifyclient">fortifyclient</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>location of the fortifyclient executable. Defaults to fortifyclient
+which will run the version on the path, uploads will fail if non
+exists.<br/><strong>Default value is</strong>: <code>fortifyclient</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#sourceanalyzer">sourceanalyzer</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>location of the sourceanalyzer executable. Defaults to
+sourceanalyzer which will run the version on the path or fail if
+non exists.<br/><strong>Default value is</strong>: <code>sourceanalyzer</code>.</td>
+          </tr>
+        </table>
+      </subsection>
+      <subsection name="Optional Parameters">
+        <table border="0">
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Since</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td><strong><a href="#baseDir">baseDir</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>(no description)<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#buildId">buildId</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>build Id - will default to project name and version. If you are
+running an aggregate build use the -Dfortify.sca.buildId
+commandline configuration option instead to set the buildId for all
+modules.<br/><strong>Default value is</strong>: <code>${project.artifactId}-${project.version}</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#buildLabel">buildLabel</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Build Label inserted in to generated FPR<br/><strong>Default value is</strong>: <code>${project.artifactId}-${project.version}</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#buildProject">buildProject</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Build Project Name inserted in to generated FPR<br/><strong>Default value is</strong>: <code>${project.artifactId}</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#buildVersion">buildVersion</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Build Version inserted in to generated FPR<br/><strong>Default value is</strong>: <code>${project.version}</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#debug">debug</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>If true sourceanalyzer will run in debug mode which is useful
+during troubleshooting<br/><strong>Default value is</strong>: <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#dontRunSCA">dontRunSCA</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>Collect commands to be run, but do not actually run them.<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#f360AuthToken">f360AuthToken</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>AnalysisUploadToken to use when attempting to upload fpr files to
+Software Security Center<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#f360Url">f360Url</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>SSC url to interact with during uplaod actions<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#failOnSCAError">failOnSCAError</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>If set to false the plugin will try to continue past individual SCA
+scan invocation failures. This is useful to get an initial scan or
+when you are doing a component by component scan of a project tree.
+Set this to true when performing an aggregate scan.<br/><strong>Default value is</strong>: <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#failOnUploadError">failOnUploadError</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>If set to false the plugin will try to continue past individual
+scan upload failures.<br/><strong>Default value is</strong>: <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#filter">filter</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Filter file to use when performing a scan<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#findbugs">findbugs</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>If true include FindBugs analysis results in the final report<br/><strong>Default value is</strong>: <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#htmlReport">htmlReport</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>If true an html report summary of results is produced<br/><strong>Default value is</strong>: <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#jre64">jre64</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>Runs Fortify SCA inside the 64-bit JRE. If no 64-bit JRE is
+available, Fortify SCA fails.<br/><strong>Default value is</strong>: <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#logfile">logfile</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Specifies the log file that is produced by Fortify SCA.<br/><strong>Default value is</strong>: <code>${project.build.directory}/sca-scan.log</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#machineOutput">machineOutput</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>If true sourceanalyzer will sends verbose status messages to the
+console.<br/><strong>Default value is</strong>: <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#maxHeap">maxHeap</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Specifies the maximum heap size of JVM which runs Fortify SCA. The
+default value is 600 MB (-Xmx600M), which can be insufficient for
+large code bases. When specifying this option, ensure that you do
+not allocate more memory than is physically available, because this
+degrades performance. As a guideline, assuming no other memory
+intensive processes are running, do not allocate more than 2/3 of
+the available memory.<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#maxPermGen">maxPermGen</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Specifies the maximum permanent space size of JVM which runs
+Fortify SCA. The permanent space is the third part of Java memory,
+where are stored classes, methods etc. The default maximum value
+for the permanent generation is 64 MB (-XX:MaxPermSize=64M). The
+permanent space is allocated as a separate memory region from the
+java heap, so increasing the permanent space will increase the
+overall memory requirements for the process.<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#minHeap">minHeap</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Specifies the initial and minimum heap size of JVM which runs
+Fortify SCA. The default value is 300MB (-Xms300M), which can be
+sufficient in most of cases.<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#projectBuildDir">projectBuildDir</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>(no description)<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#projectId">projectId</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td><strong>Deprecated.</strong> See projectName and projectVersion<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#projectName">projectName</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Project Name of the project in Software Security Center used if
+upload is set to true. Note that this must be supplied in
+conjunction with projectVersion.<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#projectVersion">projectVersion</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Project Version of the project in Software Security Center used if
+upload is set to true. Note that this must be supplied in
+conjunction with projectName.<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#quickScan">quickScan</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>Scans the project in Quick Scan Mode, using the
+fortifysca-quickscan.properties file. By default, this scan
+searches for high-confidence, high-severity issues<br/><strong>Default value is</strong>: <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#quiet">quiet</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>If true sourceanalyzer will write minimal messages to the console<br/><strong>Default value is</strong>: <code>true</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#renderSources">renderSources</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>Source files are not included in the FPR file if set to false.<br/><strong>Default value is</strong>: <code>true</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#resultsFile">resultsFile</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Location and name of the generated FPR file<br/><strong>Default value is</strong>: <code>${project.build.directory}/${project.artifactId}-${project.version}.fpr</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#rules">rules</a></strong></td>
+            <td><code>String[]</code></td>
+            <td><code>-</code></td>
+            <td>Rules files to use when performing a scan. Use an outer
+&lt;rules&gt; tag followed by nested &lt;rule&gt; tags to specify
+one or more rules files to use when performing the scan.<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#scaPropertiesFile">scaPropertiesFile</a></strong></td>
+            <td><code>File</code></td>
+            <td><code>-</code></td>
+            <td>The location of a .properties file, the contents of which are
+property-value pairs that are to be passed to sourceanalyzer in the
+form of -Dproperty=value, e.g.
+-Dcom.fortify.sca.DefaultJarsDirs=default_jar:../mylibs and
+-Dcom.fortify.sca.limiters.MaxChainDepth=10. Said file should be a
+standard Java properties file; refer to the Java documentation for
+more info on what this entails. Note that properties set in this
+manner will often take preference over Maven plug-in configuration
+properties such as defaultJarsPathString.<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#scanEnabled">scanEnabled</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>Set scanEnabled to false for any project that should not be
+scanned.<br/><strong>Default value is</strong>: <code>true</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#stackSize">stackSize</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>Specifies the thread stack size of JVM runs Fortify SCA. Thread
+stacks are memory areas allocated for each Java thread for their
+internal use. The defaul value is 1MB (-Xss1M), which can be
+insufficient for large code bases. When encountering
+java.lang.StackOverflowError, increase the value gradually. For
+example, -Xss4M, -Xss8M.<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#toplevelArtifactId">toplevelArtifactId</a></strong></td>
+            <td><code>String</code></td>
+            <td><code>-</code></td>
+            <td>For aggregate builds it is necessary to use the
+-Dfortify.sca.toplevel.artifactId commandline configuration to
+ensure that all code for modules (sub-projects) built are added
+under a single buildId and hence analyzed together. Otherwise each
+sub-module will be assigned its own default buildId<br/></td>
+          </tr>
+          <tr>
+            <td><strong><a href="#upload">upload</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>if true, the plugin will attempt to upload the result of the scan
+to Software Security Center<br/><strong>Default value is</strong>: <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#verbose">verbose</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>If true sourceanalyzer will sends verbose status messages to the
+console.<br/><strong>Default value is</strong>: <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><a href="#version">version</a></strong></td>
+            <td><code>boolean</code></td>
+            <td><code>-</code></td>
+            <td>If true sourceanalyzer will print its version<br/><strong>Default value is</strong>: <code>true</code>.</td>
+          </tr>
+        </table>
+      </subsection>
+      <subsection name="Parameter Details">
+        <p><strong><a name="baseDir">baseDir</a>:</strong></p>
+        <div>(no description)</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${basedir}</code></li>
+        </ul><hr/><p><strong><a name="buildId">buildId</a>:</strong></p>
+        <div>build Id - will default to project name and version. If you are
+running an aggregate build use the -Dfortify.sca.buildId
+commandline configuration option instead to set the buildId for all
+modules.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.buildId}</code></li>
+          <li><strong>Default</strong>: <code>${project.artifactId}-${project.version}</code></li>
+        </ul><hr/><p><strong><a name="buildLabel">buildLabel</a>:</strong></p>
+        <div>Build Label inserted in to generated FPR</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.buildLabel}</code></li>
+          <li><strong>Default</strong>: <code>${project.artifactId}-${project.version}</code></li>
+        </ul><hr/><p><strong><a name="buildProject">buildProject</a>:</strong></p>
+        <div>Build Project Name inserted in to generated FPR</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.buildProject}</code></li>
+          <li><strong>Default</strong>: <code>${project.artifactId}</code></li>
+        </ul><hr/><p><strong><a name="buildVersion">buildVersion</a>:</strong></p>
+        <div>Build Version inserted in to generated FPR</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.project}</code></li>
+          <li><strong>Default</strong>: <code>${project.version}</code></li>
+        </ul><hr/><p><strong><a name="debug">debug</a>:</strong></p>
+        <div>If true sourceanalyzer will run in debug mode which is useful
+during troubleshooting</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.debug}</code></li>
+          <li><strong>Default</strong>: <code>false</code></li>
+        </ul><hr/><p><strong><a name="dontRunSCA">dontRunSCA</a>:</strong></p>
+        <div>Collect commands to be run, but do not actually run them.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${com.fortify.dev.maven.doNotRunSCA}</code></li>
+        </ul><hr/><p><strong><a name="f360AuthToken">f360AuthToken</a>:</strong></p>
+        <div>AnalysisUploadToken to use when attempting to upload fpr files to
+Software Security Center</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.f360.authToken}</code></li>
+        </ul><hr/><p><strong><a name="f360Url">f360Url</a>:</strong></p>
+        <div>SSC url to interact with during uplaod actions</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.f360.url}</code></li>
+        </ul><hr/><p><strong><a name="failOnSCAError">failOnSCAError</a>:</strong></p>
+        <div>If set to false the plugin will try to continue past individual SCA
+scan invocation failures. This is useful to get an initial scan or
+when you are doing a component by component scan of a project tree.
+Set this to true when performing an aggregate scan.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.scan.failOnError}</code></li>
+          <li><strong>Default</strong>: <code>false</code></li>
+        </ul><hr/><p><strong><a name="failOnUploadError">failOnUploadError</a>:</strong></p>
+        <div>If set to false the plugin will try to continue past individual
+scan upload failures.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.upload.failOnError}</code></li>
+          <li><strong>Default</strong>: <code>false</code></li>
+        </ul><hr/><p><strong><a name="filter">filter</a>:</strong></p>
+        <div>Filter file to use when performing a scan</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.filter}</code></li>
+        </ul><hr/><p><strong><a name="findbugs">findbugs</a>:</strong></p>
+        <div>If true include FindBugs analysis results in the final report</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.findbugs}</code></li>
+          <li><strong>Default</strong>: <code>false</code></li>
+        </ul><hr/><p><strong><a name="fortifyclient">fortifyclient</a>:</strong></p>
+        <div>location of the fortifyclient executable. Defaults to fortifyclient
+which will run the version on the path, uploads will fail if non
+exists.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>Yes</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.managerclient.executable}</code></li>
+          <li><strong>Default</strong>: <code>fortifyclient</code></li>
+        </ul><hr/><p><strong><a name="htmlReport">htmlReport</a>:</strong></p>
+        <div>If true an html report summary of results is produced</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.htmlReport}</code></li>
+          <li><strong>Default</strong>: <code>false</code></li>
+        </ul><hr/><p><strong><a name="jre64">jre64</a>:</strong></p>
+        <div>Runs Fortify SCA inside the 64-bit JRE. If no 64-bit JRE is
+available, Fortify SCA fails.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.64bit}</code></li>
+          <li><strong>Default</strong>: <code>false</code></li>
+        </ul><hr/><p><strong><a name="logfile">logfile</a>:</strong></p>
+        <div>Specifies the log file that is produced by Fortify SCA.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.logfile}</code></li>
+          <li><strong>Default</strong>: <code>${project.build.directory}/sca-scan.log</code></li>
+        </ul><hr/><p><strong><a name="machineOutput">machineOutput</a>:</strong></p>
+        <div>If true sourceanalyzer will sends verbose status messages to the
+console.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.machineOutput}</code></li>
+          <li><strong>Default</strong>: <code>false</code></li>
+        </ul><hr/><p><strong><a name="maxHeap">maxHeap</a>:</strong></p>
+        <div>Specifies the maximum heap size of JVM which runs Fortify SCA. The
+default value is 600 MB (-Xmx600M), which can be insufficient for
+large code bases. When specifying this option, ensure that you do
+not allocate more memory than is physically available, because this
+degrades performance. As a guideline, assuming no other memory
+intensive processes are running, do not allocate more than 2/3 of
+the available memory.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.Xmx}</code></li>
+        </ul><hr/><p><strong><a name="maxPermGen">maxPermGen</a>:</strong></p>
+        <div>Specifies the maximum permanent space size of JVM which runs
+Fortify SCA. The permanent space is the third part of Java memory,
+where are stored classes, methods etc. The default maximum value
+for the permanent generation is 64 MB (-XX:MaxPermSize=64M). The
+permanent space is allocated as a separate memory region from the
+java heap, so increasing the permanent space will increase the
+overall memory requirements for the process.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.PermGen}</code></li>
+        </ul><hr/><p><strong><a name="minHeap">minHeap</a>:</strong></p>
+        <div>Specifies the initial and minimum heap size of JVM which runs
+Fortify SCA. The default value is 300MB (-Xms300M), which can be
+sufficient in most of cases.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.Xms}</code></li>
+        </ul><hr/><p><strong><a name="projectBuildDir">projectBuildDir</a>:</strong></p>
+        <div>(no description)</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${project.build.directory}</code></li>
+        </ul><hr/><p><strong><a name="projectId">projectId</a>:</strong></p>
+        <div><strong>Deprecated.</strong> See projectName and projectVersion</div>
+        <div>Project ID of the project in Software Security Center used if
+upload is set to true. Note that projectId will override
+projectName, projectVersion combinations if supplied.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.f360.projectId}</code></li>
+        </ul><hr/><p><strong><a name="projectName">projectName</a>:</strong></p>
+        <div>Project Name of the project in Software Security Center used if
+upload is set to true. Note that this must be supplied in
+conjunction with projectVersion.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.f360.projectName}</code></li>
+        </ul><hr/><p><strong><a name="projectVersion">projectVersion</a>:</strong></p>
+        <div>Project Version of the project in Software Security Center used if
+upload is set to true. Note that this must be supplied in
+conjunction with projectName.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.f360.projectVersion}</code></li>
+        </ul><hr/><p><strong><a name="quickScan">quickScan</a>:</strong></p>
+        <div>Scans the project in Quick Scan Mode, using the
+fortifysca-quickscan.properties file. By default, this scan
+searches for high-confidence, high-severity issues</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.quickScan}</code></li>
+          <li><strong>Default</strong>: <code>false</code></li>
+        </ul><hr/><p><strong><a name="quiet">quiet</a>:</strong></p>
+        <div>If true sourceanalyzer will write minimal messages to the console</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.quiet}</code></li>
+          <li><strong>Default</strong>: <code>true</code></li>
+        </ul><hr/><p><strong><a name="renderSources">renderSources</a>:</strong></p>
+        <div>Source files are not included in the FPR file if set to false.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.renderSources}</code></li>
+          <li><strong>Default</strong>: <code>true</code></li>
+        </ul><hr/><p><strong><a name="resultsFile">resultsFile</a>:</strong></p>
+        <div>Location and name of the generated FPR file</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.resultsFile}</code></li>
+          <li><strong>Default</strong>: <code>${project.build.directory}/${project.artifactId}-${project.version}.fpr</code></li>
+        </ul><hr/><p><strong><a name="rules">rules</a>:</strong></p>
+        <div>Rules files to use when performing a scan. Use an outer
+&lt;rules&gt; tag followed by nested &lt;rule&gt; tags to specify
+one or more rules files to use when performing the scan.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String[]</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+        </ul><hr/><p><strong><a name="scaPropertiesFile">scaPropertiesFile</a>:</strong></p>
+        <div>The location of a .properties file, the contents of which are
+property-value pairs that are to be passed to sourceanalyzer in the
+form of -Dproperty=value, e.g.
+-Dcom.fortify.sca.DefaultJarsDirs=default_jar:../mylibs and
+-Dcom.fortify.sca.limiters.MaxChainDepth=10. Said file should be a
+standard Java properties file; refer to the Java documentation for
+more info on what this entails. Note that properties set in this
+manner will often take preference over Maven plug-in configuration
+properties such as defaultJarsPathString.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.io.File</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.properties.file}</code></li>
+        </ul><hr/><p><strong><a name="scanEnabled">scanEnabled</a>:</strong></p>
+        <div>Set scanEnabled to false for any project that should not be
+scanned.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Default</strong>: <code>true</code></li>
+        </ul><hr/><p><strong><a name="sourceanalyzer">sourceanalyzer</a>:</strong></p>
+        <div>location of the sourceanalyzer executable. Defaults to
+sourceanalyzer which will run the version on the path or fail if
+non exists.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>Yes</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.sourceanalyzer.executable}</code></li>
+          <li><strong>Default</strong>: <code>sourceanalyzer</code></li>
+        </ul><hr/><p><strong><a name="stackSize">stackSize</a>:</strong></p>
+        <div>Specifies the thread stack size of JVM runs Fortify SCA. Thread
+stacks are memory areas allocated for each Java thread for their
+internal use. The defaul value is 1MB (-Xss1M), which can be
+insufficient for large code bases. When encountering
+java.lang.StackOverflowError, increase the value gradually. For
+example, -Xss4M, -Xss8M.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.Xss}</code></li>
+        </ul><hr/><p><strong><a name="toplevelArtifactId">toplevelArtifactId</a>:</strong></p>
+        <div>For aggregate builds it is necessary to use the
+-Dfortify.sca.toplevel.artifactId commandline configuration to
+ensure that all code for modules (sub-projects) built are added
+under a single buildId and hence analyzed together. Otherwise each
+sub-module will be assigned its own default buildId</div>
+        <ul>
+          <li><strong>Type</strong>: <code>java.lang.String</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.toplevel.artifactId}</code></li>
+        </ul><hr/><p><strong><a name="upload">upload</a>:</strong></p>
+        <div>if true, the plugin will attempt to upload the result of the scan
+to Software Security Center</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.upload}</code></li>
+          <li><strong>Default</strong>: <code>false</code></li>
+        </ul><hr/><p><strong><a name="verbose">verbose</a>:</strong></p>
+        <div>If true sourceanalyzer will sends verbose status messages to the
+console.</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.verbose}</code></li>
+          <li><strong>Default</strong>: <code>false</code></li>
+        </ul><hr/><p><strong><a name="version">version</a>:</strong></p>
+        <div>If true sourceanalyzer will print its version</div>
+        <ul>
+          <li><strong>Type</strong>: <code>boolean</code></li>
+          <li><strong>Required</strong>: <code>No</code></li>
+          <li><strong>Expression</strong>: <code>${fortify.sca.version}</code></li>
+          <li><strong>Default</strong>: <code>true</code></li>
+        </ul>
+      </subsection>
+    </section>
+  </body>
+</document>

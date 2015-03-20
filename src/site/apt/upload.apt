@@ -1,0 +1,55 @@
+Scan Upload & Project Auto Creation 
+
+  The scan goal in addition to generating the fpr files is able upload the results to Fortify 360 Server.  
+  It accomplishes this through the command-line invocation of the fortifyclient tool which is part of the SCA
+  install.
+  
+  The following section gives a brief outline of using fortifyclient to gain access to the authentication key
+  necessary to upload fpr files.  It is important to first ensure that you can use fortifyclient to upload
+  fpr files manuallybefore attempting to use it from within the plugin.
+  
+* Retrieving an Authentication Token using fortifyclient 
+
+  In order to take advantage of the scan goal's abilities to automatically upload scan results to 
+  or Fortify 360 Server you must first retrieve an authentication token.  This is explained
+  in detail in the SCA tool documentation.  However minimally you should run the following or equivalent 
+  command: 
+
++----------+
+fortifyclient token -gettoken AnalysisUploadToken -url http://127.0.0.1:8180/ssc  -user <user>
++----------+
+
+  Note that the SSC URL and username in the above example command-line will need to be replaced with those appropriate 
+  for your setup.  You should replace this as you see fit.  Refer to the tool documentation for more details.
+
+  Where <user> is a user with upload access to the projects in question, and <password> is the password for
+  this user.
+  
+  Before attempting to trouble shoot why the plugin is unable to upload scans you must first verify that you are able 
+  to perform these tasks manually by invoking fortifyclient directly.  The Example runs below should all succeed if you 
+  have your system configured properly.
+  
++----------+
+fortifyclient listprojects -url http://127.0.0.1:8180/ssc  -authtoken UUID 
+fortifyclient uploadFPR -url http://127.0.0.1:8180/ssc -f MyProject.fpr -project myApplication -projectversion main -authtoken UUID
++----------+  
+  
+  Note that in the above examples the SSC Url, Authentication Token and Project/ProjectVersion will need to be replaced with
+  those appropriate for your setup.
+
+* Upload usage
+
+	Once the authentication key has been retrieved from fortifyclient uploading generated fprs is achieved simply by setting 
+	the scan goals upload configuration parameter to true and supplying the SSC Url and authentication token. 
+		
+	The example run below uses this method to scan and upload the generated scan.
+	
++----------+
+mvn -Dfortify.sca.upload=true com.fortify.ps.maven.plugin:sca-maven-plugin:scan
++----------+	 
+
+	Note that you can also manually supply the projectName/projectVersion combination to the
+	sca plugin.  When projectId or projectName/Version are not supplied, these are read from the project pom.xml
+	and the listprojects output of fortifyclient is invoked to locate the matching project in SSC.  If a match is not 
+	found the upload will fail.  Matching is exact and case sensitive both on project name and project version therefore it
+	is important for project created in SSC to match the values in the pom.xml.

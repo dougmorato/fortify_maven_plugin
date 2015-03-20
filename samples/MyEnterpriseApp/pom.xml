@@ -1,0 +1,113 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.fortify</groupId>
+	<artifactId>BuildSupport</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+	<name>BuildSupport</name>
+	
+	<!--
+		INSTRUCTIONS
+
+		Run the following to build your project. You may need to re-configure the POM files to match your environment.
+
+		    mvn clean
+		    mvn compile package
+
+		At this point, the EAR project, MyEnterpriseApp, has been pre-compiled. For details, see its POM file.
+		The below commands will explode the EAR that was built and use the generated Java sources contained therein
+		to assist with getting translations for ths project's JSPs.
+		
+		    mvn sca:clean
+		    mvn sca:ear		 # This step explodes the EAR file in the target folder and builds up a classpath for SCA.
+		    mvn sca:translate
+
+		Let's verify that the above translation step worked. Run the following. You should see:
+		   src/main/java/com/fortify/tags/GreetingsTag.java
+		   WebContent/mypage.jsp
+
+		sourceanalyzer -b AnAwesomeWebApp -show-files
+		
+		(The above commands assume you are using plugin prefix mapping to shorten them. If you are not using this Maven
+		feature, simply use the long syntax, e.g. mvn com.fortify.ps.maven.plugin:sca-maven-plugin:<version>:ear.)
+	//-->
+	
+	<modules>
+	  <module>MyWebApp</module>
+	  <module>MyEnterpriseApp</module>
+	</modules>
+
+	<profiles>
+		<profile>
+			<id>non-windows</id>
+			<activation>
+				<os>
+					<family>!Windows</family>
+				</os>
+			</activation>
+			<properties>
+				<weblogic.home>/opt/bea/wlserver_10.3</weblogic.home>
+			</properties>
+		</profile>
+		<profile>
+			<id>windows</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+			<properties>
+				<weblogic.home>C:\bea\wlserver_10.3</weblogic.home>
+			</properties>
+		</profile>
+		<profile>
+			<id>debug</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.fortify.ps.maven.plugin</groupId>
+						<artifactId>sca-maven-plugin</artifactId>
+						<configuration>
+							<debug>true</debug>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
+	<properties>
+		<weblogic.version>10</weblogic.version>
+	</properties>
+
+	<build>
+	  <plugins>
+	    <plugin>
+	      <groupId>com.fortify.ps.maven.plugin</groupId>
+	      <artifactId>sca-maven-plugin</artifactId>
+	      <configuration>
+			<!-- As shown here, when translating an EAR (or any multi-module project for that matter), both buildId
+			and toplevelArtifactId must be set in the sca-maven-plugin configuration of the parent POM. Use project
+			inheritance to pass these values down to the modules.
+
+			(These values may also be provide from the command line but it is recommended
+			that to facilitate repeatable scans.
+			
+			A note of caution: Do not use ${project.artifactId} as the value for topLevelArtifactId.
+			The expression, not the value, will be inherited and evaluated by the child project.
+
+			Currently, this method for translating JSPs only works for WebLogic 10.3.
+			//-->
+		  
+			<buildId>AnAwesomeWebApp</buildId>
+			<appserver>weblogic</appserver>
+			<appserverHome>${weblogic.home}</appserverHome>
+			<appserverVersion>${weblogic.version}</appserverVersion>
+			<source>1.6</source>
+			<toplevelArtifactId>BuildSupport</toplevelArtifactId>
+			<failOnSCAError>true</failOnSCAError>
+	      </configuration>
+	    </plugin>
+	  </plugins>
+	</build>
+</project>

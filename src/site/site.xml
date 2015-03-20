@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="HP Fortify SCA Plugin for Maven 2 and 3">
+	<bannerLeft>
+		<name>SCA Maven Plugin</name>
+		<src>
+			http://www.fortify.com/images/gui/logo.fortify.print.png
+		</src>
+		<href>http://www.fortify.com/</href>
+	</bannerLeft>
+	<bannerRight>
+		<src>http://maven.apache.org/images/maven-logo-2.gif</src>
+	</bannerRight>
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-stylus-skin</artifactId>
+		<version>1.0.1</version>
+	</skin>
+	<publishDate format="dd MMM yyyy" />
+	<body>
+		<menu name="Overview">
+			<item name="Introduction" href="index.html" />
+			<item name="Goals" href="plugin-info.html" />
+			<item name="Usage" href="usage.html" />
+			<item name="FAQ" href="faq.html" />
+		</menu>
+		<menu name="Resources">
+			<item name="Fortify Software, Inc."
+				href="http://www.fortify.com" />
+		</menu>
+		<menu ref="reports" />
+	</body>
+</project>

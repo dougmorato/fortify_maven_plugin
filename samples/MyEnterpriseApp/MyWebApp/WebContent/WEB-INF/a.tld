@@ -1,0 +1,15 @@
+<taglib>
+	<tlib-version>2.0</tlib-version>
+	<jsp-version>2.0</jsp-version>
+	<short-name>a</short-name>
+	<uri>a</uri>
+	<description>
+		This is an immensely useful tag library.
+	</description>
+
+	<tag>
+		<name>greeting</name>
+		<tag-class>com.fortify.tags.GreetingsTag</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+</taglib>

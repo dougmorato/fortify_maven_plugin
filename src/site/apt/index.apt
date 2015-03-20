@@ -1,0 +1,47 @@
+                                    ------
+                                    Introduction
+                                    ------
+                                    Kaveh Goudarzi
+                                    ------
+                                     2008 11 27
+
+
+
+HP Fortify SCA Plugin for Maven 2 and 3
+
+  This plugin is intended for use with Java projects that are built using Maven 2 and 3. Before using this plugin, please ensure that HP Fortify SCA is properly installed and that sourceanalyzer is searchable using your PATH environment variable.
+
+* Plugin Installation
+
+ From a command prompt or shell, navigate to the directory containing the files of this plugin. Then run:
+
++-------------------+
+mvn clean package install
++-------------------+
+
+ You may want to configure this plugin in various ways. For this reason, you may find the particular Maven documentation at the following links to be helpful.
+  
+  *{{{http://maven.apache.org/guides/mini/guide-configuring-plugins.html}Configuring Plugins}}
+  
+  *{{{http://maven.apache.org/guides/plugin/guide-java-plugin-development.html}Plugin Development}}
+
+  *{{{http://maven.apache.org/guides/introduction/introduction-to-plugin-prefix-mapping.html}Plugin Prefix}}
+   
+* Usage Overview
+
+  * {{{./clean-mojo.html}sca:clean}} Binds to the clean phase. Clears out a build ID.
+   
+  * {{{./translate-mojo.html}sca:translate}} Binds to the package phase. Performs translation of source files.
+
+  * {{{./scan-mojo.html}sca:scan}} Does not bind to any phase. Must be invoked separately after the package phase. Performs analysis and generates the FPR.
+  
+  * {{{./scan-mojo.html}sca:cloudscan}} An alternative to {{{./scan-mojo.html}sca:scan}} for running the centralized CloudScan service. 
+  
+  * {{{./upload-mojo.html}sca:upload}} Must be invoked separately after the package phase. Uploads the FPR to SSC.
+  
+  Please refer to the SCA User's Guide if you are unfamiliar with the steps required to perform an SCA analysis.
+   
+[]
+
+  The {{{./usage.html}usage page}} will get you started using this plugin quickly.
+

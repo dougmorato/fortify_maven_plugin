@@ -1,0 +1,48 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.fortify</groupId>
+	<artifactId>MyWebApp</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>MyWebApp</name>
+	
+	<parent>
+		<groupId>com.fortify</groupId>
+		<artifactId>BuildSupport</artifactId>
+		<version>1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	
+	<dependencies>
+		<!--
+		In order to install this dependency in your repository, navigate to C:\bea\modules and run:
+
+		mvn install:install-file -DgroupId=javax.servlet -DartifactId=jsp -Dversion=1.1.0.0_2-1 \
+		-Dpackaging=jar -DgeneratePom=true -Dfile=javax.jsp_1.1.0.0_2-1.jar
+		
+		(The directory you run this command in may vary depending on how you installed WebLogic.)
+		//-->
+	
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp</artifactId>
+			<version>1.1.0.0_2-1</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<!-- By default, the plug-in looks inside src/main/webapp for JSPs. However, if a value is provided
+					for the below property, warSourceDirectory, the plug-in looks there instead.
+					//-->
+					<warSourceDirectory>WebContent</warSourceDirectory>
+					<webappDirectory>target/WebContent</webappDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

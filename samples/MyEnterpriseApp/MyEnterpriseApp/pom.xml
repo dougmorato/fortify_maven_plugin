@@ -1,0 +1,158 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.fortify</groupId>
+    <artifactId>MyEnterpriseApp</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>ear</packaging>
+    <name>MyEnterpriseApp</name>
+
+    <parent>
+        <groupId>com.fortify</groupId>
+        <artifactId>BuildSupport</artifactId>
+        <version>1.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.fortify</groupId>
+            <artifactId>MyWebApp</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>com.fortify</groupId>
+            <artifactId>util</artifactId>
+            <version>5.6</version>
+            <type>jar</type>
+        </dependency>
+        //-->
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>non-windows</id>
+            <activation>
+                <os>
+                    <family>!Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <weblogic.home>/opt/bea/wlserver_10.3</weblogic.home>
+            </properties>
+        </profile>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <weblogic.home>C:\bea\wlserver_10.3</weblogic.home>
+            </properties>
+        </profile>
+    </profiles>
+
+    <properties>
+        <weblogic.version>10.3</weblogic.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <!--
+                An external plug-in pre-compiles the EAR, accomplishing something to the effect of:
+
+                    java weblogic.appc -keepgenerated -lineNumbers -forceGeneration MyEnterpriseApp-1.0-SNAPSHOT
+
+                It is important that the pre-compilation step is set up to occur before sca:ear executes, which will
+                assume that generated Java sources have been dumped to
+
+                    ${project.build.directory}/${project.build.finalName}
+
+                that is, unless you've configured sca:ear otherwise.
+
+                    <configuration>
+                       ...
+                       <generatedSourcesDirectory>some_other_folder</generatedSourcesDirectory>
+                       <earFileName>alternate_name.ear</earFileName>
+                    </configuration>
+
+               //-->
+
+            <plugin>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <earSourceDirectory>EarContent</earSourceDirectory>
+                    <modules>
+                        <webModule>
+                            <groupId>com.fortify</groupId>
+                            <artifactId>MyWebApp</artifactId>
+                            <!-- The SCA Maven Plugin will not explode anything inside the EAR
+                                 that does not have a "war" extension. Such Web modules must be exploded
+                                 manually prior to running the translate goal. In any case, the following
+                                 does indeed
+                            //-->
+                            <bundleFileName>MyWebAppIsGreat.war</bundleFileName>
+                            <contextRoot>/mywebapp</contextRoot>
+                        </webModule>
+                        <!--
+                        <jarModule>
+                            <groupId>com.fortify</groupId>
+                            <artifactId>util</artifactId>
+                            <bundleDir>APP-INF/lib</bundleDir>
+                        </jarModule>
+                        //-->
+                    </modules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!--
+                    You would probably use an external plugin in order to pre-compile your EAR.
+                //-->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>weblogic-maven-plugin</artifactId>
+                <configuration>
+                    <adminServerHostName>localhost</adminServerHostName>
+                    <adminServerPort>7002</adminServerPort>
+                    <adminServerProtocol>https</adminServerProtocol>
+                    <userId>weblogic</userId>
+                    <password>weblogic</password>
+                    <upload>false</upload>
+                    <remote>false</remote>
+                    <verbose>false</verbose>
+                    <debug>true</debug>
+                    <targetNames>AdminServer</targetNames>
+                    <keepGenerated>true</keepGenerated>
+                    <forceGeneration>true</forceGeneration>
+                    <lineNumbers>true</lineNumbers>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>appc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>weblogic</groupId>
+                        <artifactId>weblogic</artifactId>
+                        <version>${weblogic.version}</version>
+                        <scope>system</scope>
+                        <systemPath>${weblogic.home}/server/lib/weblogic.jar</systemPath>
+                    </dependency>
+                    <dependency>
+                        <groupId>weblogic</groupId>
+                        <artifactId>webservices</artifactId>
+                        <version>${weblogic.version}</version>
+                        <scope>system</scope>
+                        <systemPath>${weblogic.home}/server/lib/webservices.jar</systemPath>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+</project>

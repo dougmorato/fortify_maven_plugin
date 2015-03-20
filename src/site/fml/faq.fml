@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faqs title="Frequently Asked Questions" toplink="false">
+
+	<part id="general">
+		<title>General</title>
+
+
+		<faq id="processExecError">
+			<question>
+				Why do I get "Error while executing process." ?
+			</question>
+			<answer>
+				<p>
+					The sca plugin invokes the command-line
+					sourceanalyzer executable. This must be installed
+					and accessible before the plugin can invoke it.
+
+					Please ensure that Fortify SCA is installed properly
+					and that you are able to invoke it manually. You
+					then have the option of adding the executable to the
+					path or provide it's location via the sourceanalyzer
+					plugin configuration property in your pom.xml or on
+					the maven command-line using
+					-Dfortify.sca.sourceanalyzer.executable=path-to-source-analyzer
+
+				</p>
+			</answer>
+		</faq>
+
+		<faq id="processExecError">
+			<question>
+				What does "[error]: Build ID "XXXXXXXXX" doesn't exist."
+				mean?
+			</question>
+			<answer>
+				<p>
+					The SCA scan goal operates on a group of source
+					files associated in the translate phase with a
+					buildId. This error suggests that there are no
+					source files associated with the supplied buildID.
+
+					To remedy this you need to run the translate goal
+					before invoking the scan goal.
+
+					Note however that if you are running the scan goal
+					on a aggregator project without specifically
+					supplying a buildId or a topelevel project name then
+					this error can be safely ignored for build ID's
+					which match artifactId's matching aggregator
+					projects (e.g. those with a packaging of "pom").
+
+					Refer to the usage instructions for more details..
+				</p>
+			</answer>
+		</faq>
+
+		<faq id="pom">
+			<question>
+				What does "******* Packaging is pom - ignoring ********"
+				mean?
+			</question>
+			<answer>
+				<p>
+					This is normal as these are aggregator projects with
+					no concrete assets to scan, unlike jar or war
+					packaging poms.
+				</p>
+			</answer>
+		</faq>
+
+		<faq id="ear">
+			<question>My ear projects are not scanned, why?</question>
+			<answer>
+				<p>
+					An ear project is usually just a vehicle for packaging other assets and
+					as such does not immediately appear to be of interest to the analyzer.
+				</p>
+			</answer>
+		</faq>
+
+		<faq id="test">
+			<question>
+				I don't want to scan my test files, how do I skip these?
+			</question>
+			<answer>
+				<p>
+					This is controlled by the value of the skipTests
+					parameter during the translate phase. This parameter
+					defaults to true and therefore by default test files
+					are not scanned. If you wish to scan these then you
+					need to either set this configuration parameter to
+					false in the plugin configuration section of your
+					pom.xml or set it using the
+					$fortify.sca.tests.exclude=false on the maven
+					command-line.
+				</p>
+			</answer>
+		</faq>
+
+		<faq id="xmx">
+			<question>
+				How do I increase the amount of memory allocated to the
+				SCA scan phase?
+			</question>
+			<answer>
+				<p>
+					Use the maxHeap option in the plugin configuration
+					section or the -Dfortify.sca.Xmx variable on the
+					Maven command-line invocation.
+				</p>
+			</answer>
+		</faq>
+		<faq id="trouble">
+			<question>
+				Something went wrong, how can I troubleshoot?
+			</question>
+			<answer>
+				<p>
+					Set the verbose and debug parameters to true and
+					then look in the generated log files in the target
+					directories. Each SCA phase - clean, translate, scan
+					- has a separate log and argument file which can be
+					examined separately for errors. The argument files
+					contain the invocation parameters used during the
+					maven runs. You can re-run these commands manually
+					by invoking sourceanalyzer @args-file.txt.
+
+					If these steps do not help you can submit the logs
+					and arg files to fortify technical support.
+				</p>
+			</answer>
+		</faq>
+
+	</part>
+</faqs>

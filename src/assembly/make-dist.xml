@@ -1,0 +1,36 @@
+<assembly>
+	<id>bin</id>
+	<formats>
+		<format>zip</format>
+		<format>tar.gz</format>
+	</formats>
+
+	<fileSets>
+		<fileSet>
+			<directory>target/site</directory>
+			<outputDirectory>sca-maven-plugin-docs</outputDirectory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+			<excludes>
+				<exclude>xref/**/*</exclude>
+			</excludes>
+			<lineEnding>unix</lineEnding>
+		</fileSet>
+		<fileSet>
+			<directory>target</directory>
+			<outputDirectory>.</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>		
+		<fileSet>
+			<directory>samples</directory>
+			<outputDirectory>samples</outputDirectory>
+			<includes>
+				<include>EightBall/**/*</include>
+				<include>MyEnterpriseApp/**/*</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>

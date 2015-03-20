@@ -1,0 +1,220 @@
+Usage 
+
+  There are two ways to use this plugin. One, you may configure and execute each goal from the command line. Or two, you may configure each goal inside your POM and allow some of them to be executed as part of the build lifecycle. This page discusses both methods. In either case, you will find the generated FPR inside your project's target directory.
+  
+  Each goal has a large number of properties that you may configure. Note that they mirror those of sourceanalyzer itself. For detailed information about what they do, please refer to the SCA User's Guide.
+  
+* Scanning a Simple Project from the Command Line
+
+ A simple project is standalone; in particular, it does not aggregate other projects. The below sequence of commands demonstrates how to generate an FPR for this kind of project.
+
++----------+
+mvn clean
+mvn com.fortify.ps.maven.plugin:sca-maven-plugin:<version>:clean
+mvn package com.fortify.ps.maven.plugin:sca-maven-plugin:<version>:translate
+mvn -Dfortify.sca.Xmx=800M com.fortify.ps.maven.plugin:sca-maven-plugin:<version>:scan
++----------+
+
+  Additionally, the above sequence of commands illustrates how to increase the maximum heap-size of SCA's scan step.
+  
+  If you had wanted to have the scan goal automatically upload the FPR it generated to an instance of Software Security Center, you would have run the following in place of the above scan-goal execution.
+
++----------+
+mvn -Dfortify.sca.Xmx=800M -Dfortify.sca.upload=true  -Dfortify.f360.url=<SSC URL>/ssc  -Dfortify.f360.authToken=<Your AnalysisUploadToken> com.fortify.ps.maven.plugin:sca-maven-plugin:<version>:scan
++----------+
+
+	Note that you would need to fill out the Software Security Center URL and the authentication token as appropriate for you. For more information about Software Security Center, please see the Software Security Center User's Guide and/or contact your Software Security Center administrator.
+    
+* Scanning a Complex Project from the Command Line
+
+ Please familiarize yourself with project aggregation before proceeding.
+ 
+ * {{{http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Aggregation}Project Aggregation}}
+ 
+[]
+
+  A complex project is one that aggregates several projects. If you simply follow the instructions in "Scanning a Simple Project from the Command Line," the plugin will cause sourceanalyzer to generate an FPR for each sub-project, because the plugin will consider each project to be a simple, standalone project; and even less desirably, none of the FPRs will reflect a whole-project analysis.
+  
+  For example, the below project, AcmePortal, aggregates three projects: Rocket, GiantRubberBand, and AcmeDeliveryService. If you simply follow the instructions for scanning a simple project, you will end up with a separate FPR for Rocket, GiantRubberBand, and AcmeDeliveryService rather than an all-encompassing one for AcmePortal.
+  
++----------+
+<project>
+   <groupId>net.cartoons.apps</groupId>
+   <artifactId>AcmePortal</artifactId>
+   <version>3.0</version>
+   <packaging>pom</packaging>
+   ...
+   <modules>
+      <module>Rocket</module>
+      <module>GiantRubberBand</module>
+      <module>AcmeDeliveryService</module>
+   </modules>   
+</project>
++----------+
+  
+  In order to perform whole-project analysis, you must perform some additional configuration. First, when executing the translate goal, associate each sub-project with a single build ID by explicitly specifying a value for it. And second, when executing the scan goal, explicitly identify the parent POM by its artifact ID. The following sequence of commands demonstrates how to configure these.
+
++----------+
+mvn clean
+mvn -Dfortify.sca.buildId=ACMEPortal com.fortify.ps.maven.plugin:sca-maven-plugin:<version>:clean
+mvn -Dfortify.sca.buildId=ACMEPortal package com.fortify.ps.maven.plugin:sca-maven-plugin:<version>:translate
+mvn -Dfortify.sca.Xmx=800M -Dfortify.sca.buildId=ACMEPortal -Dfortify.sca.toplevel.artifactId=AcmePortal com.fortify.ps.maven.plugin:sca-maven-plugin:<version>:scan
++----------+
+	
+* Scanning as Part of your Build Lifecycle
+
+ Before you proceed, make sure that you are familiar with (1) per-project build profiles, (2) project inheritance, and (3) plugin configuration inside a POM.
+ 
+ * {{{http://maven.apache.org/guides/introduction/introduction-to-profiles.html}Per-Project Build Profile}}
+ 
+ * {{{http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance}Project Inheritance}}
+ 
+ * {{{http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Plugins}Plugin Configuration}}
+ 
+[]
+
+  If you followed along with the command line examples, you saw that the nature of your particular project may require you to set certain properties. Rather than doing this each time you invoke a goal, you may want to configure these properties once and for all in your POM and for that matter allow some of the goals to execute automatically as part of the build lifecycle.
+  
+  You may accomplish these in several ways. This section will take you through an example of how someone might do it.
+  
+  Since the translate and scan goals require different property settings, we will create a separate profile for each of them. In this example, we will call them sca-translate and sca-scan. Since the clean goal generally does not require configuration, we will configure its execution in the sca-translate goal. This example will also assume that your project uses aggregation, which as you may have read in "Scanning a Complex Project from the Command Line," requires additional configuration of both the translate and scan goals. After defining these profiles, you will be able to generate an FPR for your project with the following sequence of commands:
+  
++-----------+
+mvn -P sca-aggregate,sca-translate clean package 
+mvn -P sca-aggregate,sca-scan com.fortify.ps.maven.plugin:sca-maven-plugin:<version>:scan
++----------+  
+
+ NOTES
+ 
+ * If your project does not use aggregation, simply do not activate the sca-aggregate profile.
+ 
+ * You do not need to configure the plugin in every POM; you simply have to use project inheritance. If you choose to use project inheritance, do not forget that, while you do not need to redundantly configure the plugin in a child POM, you do need to add an entry for the plugin. The following will do just this.
+
++----------+ 
+   <build>
+    <plugins>
+      <plugin>
+        <groupId>com.fortify.ps.maven.plugin</groupId>
+        <artifactId>sca-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
++----------+ 
+  
+ * Each profile should be made inactive by default, because in general you do not want to generate an FPR every time you build your project.
+
+[]
+
+ And now, let us examine each profile in detail.
+
+  [[1]] sca-translate profile - Configures the clean and translate goals in this profile. You do not need to manually bind these goals to a lifecycle phase: The clean goal automatically binds to the clean phase and the translate goal automatically binds to the package phase.
+  
++----------+
+<project>
+  ...
+  <profiles>
+    <profile>
+      <id>sca-translate</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>com.fortify.ps.maven.plugin</groupId>
+              <artifactId>sca-maven-plugin</artifactId>
+              <executions>	
+                <execution>
+                  <goals>
+                    <goal>clean</goal>
+                  </goals>
+                </execution>			  
+                <execution>
+                  <goals>
+                    <goal>translate</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    ...
+  </profiles>
+  ...
+</project>
++----------+
+  
+  [[2]] sca-scan - Configures the scan goal in this profile. It is not appropriate to bind this goal to any lifecycle phase.
+
++----------+
+<project>
+  ...
+  <profiles>
+    <profile>
+      <id>sca-scan</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>com.fortify.ps.maven.plugin</groupId>
+              <artifactId>sca-maven-plugin</artifactId>
+              <configuration>
+                <findbugs>true</findbugs>
+                <htmlReport>true</htmlReport>
+                <maxHeap>800M</maxHeap>
+                <rules>
+                  <rule>/share/sca/rules/validation/validation-lib-cleanse-rules.xml</rule>
+                  <rule>/share/sca/rules/thirdparty/api/acme-messaging-api.xml</rule>
+                </rules>
+                <filter>/share/sca/apps/ACMEPortal/filters/filter.xml</filter> 
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    ...
+  </profiles>
+  ...
+</project>
++----------+  
+
+  [[3]] sca-aggregate - Configures the build ID and the artifact ID of the parent POM in this profile.
+  
++----------+
+<project>
+  ...
+  <profiles>
+    <profile>
+      <id>sca-aggregate</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>com.fortify.ps.maven.plugin</groupId>
+              <artifactId>sca-maven-plugin</artifactId>
+              <configuration>
+                <buildId>ACMEPortal</buildId>
+                <toplevelArtifactId>AcmePortal</toplevelArtifactId>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    ...
+  </profiles>
+  ...
+</project>
++----------+  
+  
+[]

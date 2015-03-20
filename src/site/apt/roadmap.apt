@@ -1,0 +1,11 @@
+Plugin Roadmap
+
+  The following enhancement to the plugin are planned for the near future
+ 
+  * Support for more package types - e.g. support for ejb 
+  
+  * A scan activity report identifying scanned projects, errors etc. to aid users in the verification step.
+   
+  * Option for Maven build to fail if scan violates "critical policies"
+  
+ Please submit bug reports and enhancement requests to the project team.  
